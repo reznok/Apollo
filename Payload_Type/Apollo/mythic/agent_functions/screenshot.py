@@ -23,7 +23,7 @@ class ScreenshotArguments(TaskArguments):
             if len(parts) != 2:
                 raise Exception("Invalid command line arguments passed.\n\tUsage: {}".format(ScreenshotCommand.help_cmd))
             try:
-                int(parts[1])
+                int(parts[0])
             except:
                 raise Exception(f"Invalid PID passed to screenshot: {parts[0]}")
             self.add_arg("pid", int(parts[0]), ParameterType.Number)
@@ -38,7 +38,7 @@ class ScreenshotArguments(TaskArguments):
 class ScreenshotCommand(CommandBase):
     cmd = "screenshot"
     needs_admin = False
-    help_cmd = "screenshot <x86/x64> <pid>"
+    help_cmd = "screenshot <pid> <x86/x64>"
     description = "Take a screenshot of the current desktop."
     version = 1
     is_exit = False
