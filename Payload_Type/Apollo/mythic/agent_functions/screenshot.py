@@ -54,7 +54,7 @@ class ScreenshotCommand(CommandBase):
 
     async def create_tasking(self, task: MythicTask) -> MythicTask:
         arch = task.args.get_arg("arch")
-        dllFile = path.join(self.agent_code_path, f"Screenshot.dll")
+        dllFile = path.join(self.agent_code_path, f"Screenshot_{arch}.dll")
         dllBytes = open(dllFile, 'rb').read()
         converted_dll = ShellcodeRDI.ConvertToShellcode(dllBytes, ShellcodeRDI.HashFunctionName("InitializeNamedPipeServer"), task.args.get_arg("pipe_name").encode(), 0)
         resp = await MythicFileRPC(task).register_file(converted_dll)

